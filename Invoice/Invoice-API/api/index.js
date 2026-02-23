@@ -1,4 +1,4 @@
-// Vercel automatically injects environment variables - no dotenv needed
+require('dotenv').config();
 const app = require('../server');
 
 // Export Express app for Vercel serverless
