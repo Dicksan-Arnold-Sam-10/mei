@@ -206,8 +206,8 @@ class InvoiceForm extends React.Component {
     };
     var items = this.state.items.slice();
     var newItems = items.map(function(existingItem) {
-      // FIX: Compare the item id correctly
-      if (existingItem.id == item.id) {
+      // Compare the item id strictly
+      if (existingItem.id === item.id) {
         existingItem[item.name] = item.value;
       }
       return existingItem;
@@ -301,8 +301,7 @@ class InvoiceForm extends React.Component {
         discountRate: this.state.discountRate,
         discountAmount: this.state.discountAmount,
         total: this.state.total,
-        logoUrl: this.state.logoUrl,
-        status: this.state.status
+        logoUrl: this.state.logoUrl
       };
 
       const response = await invoiceAPI.create(invoiceData);

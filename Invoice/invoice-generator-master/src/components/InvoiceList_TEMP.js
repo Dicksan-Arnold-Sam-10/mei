@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Table, Button, Spinner, Card, Row, Col, Badge, Form, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -122,9 +122,21 @@ function InvoiceList() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteInvoiceId, setDeleteInvoiceId] = useState(null);
 
+  const fetchInvoices = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await invoiceAPI.getAll();
+      setInvoices(response.data);
+    } catch (err) {
+      showNotification(err.response?.data?.message || 'Failed to fetch invoices', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchInvoices();
-  }, []);
+  }, [fetchInvoices]);
 
   const showNotification = (message, type = 'success') => {
     setSnackbarMessage(message);
@@ -136,17 +148,7 @@ function InvoiceList() {
     setShowSnackbar(false);
   };
 
-  const fetchInvoices = async () => {
-    try {
-      setLoading(true);
-      const response = await invoiceAPI.getAll();
-      setInvoices(response.data);
-    } catch (err) {
-      showNotification(err.response?.data?.message || 'Failed to fetch invoices', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   const handleDeleteClick = (id) => {
     setDeleteInvoiceId(id);
