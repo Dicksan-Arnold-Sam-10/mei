@@ -1,3 +1,5 @@
+// explicit require so that the mysql2 package is included in Vercel bundles
+require('mysql2');
 const { Sequelize } = require('sequelize');
 // ❌ REMOVED: require('dotenv').config() - Vercel injects env vars automatically
 
