@@ -1,0 +1,38 @@
+CREATE DATABASE invoice_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE invoice_db;
+CREATE TABLE Users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  companyName VARCHAR(255),
+  companyAddress TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE Invoices (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  userId INT NOT NULL,
+  invoiceNumber INT NOT NULL,
+  dateOfIssue DATE,
+  billTo VARCHAR(255),
+  billToEmail VARCHAR(255),
+  billToAddress TEXT,
+  billFrom VARCHAR(255),
+  billFromEmail VARCHAR(255),
+  billFromAddress TEXT,
+  items JSON,
+  subTotal DECIMAL(10, 2),
+  discountRate DECIMAL(5, 2),
+  discountAmount DECIMAL(10, 2),
+  sgstRate DECIMAL(5, 2),
+  sgstAmount DECIMAL(10, 2),
+  cgstRate DECIMAL(5, 2),
+  cgstAmount DECIMAL(10, 2),
+  total DECIMAL(10, 2),
+  notes TEXT,
+  status ENUM('draft', 'sent', 'paid') DEFAULT 'draft',
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+);
