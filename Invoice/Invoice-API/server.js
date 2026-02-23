@@ -12,10 +12,23 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Sync Database
-sequelize.sync({ alter: false })
-  .then(() => console.log('✅ Database synced'))
-  .catch(err => console.log('❌ Sync Error:', err));
+// Sync Database (only on first initialization)
+let syncPromise = null;
+const initializeDatabase = async () => {
+  if (!syncPromise) {
+    syncPromise = sequelize.sync({ alter: false })
+      .then(() => console.log('✅ Database synced'))
+      .catch(err => console.log('❌ Sync Error:', err));
+  }
+  return syncPromise;
+};
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('✅ MySQL Connected');
+    initializeDatabase();
+  })
+  .catch(err => console.log('❌ MySQL Error:', err));
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
@@ -23,7 +36,7 @@ app.use('/api/invoices', require('./routes/invoiceRoutes'));
 
 // Basic Route
 app.get('/', (req, res) => {
-  res.json({ message: '✅ Invoice Backend Running (MySQL)' });
+  res.json({ message: '✅ Invoice Backend Running' });
 });
 
 // export the app for serverless environments
