@@ -26,5 +26,11 @@ app.get('/', (req, res) => {
   res.json({ message: '✅ Invoice Backend Running (MySQL)' });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// export the app for serverless environments
+module.exports = app;
+
+// start local server when invoked directly
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+}
