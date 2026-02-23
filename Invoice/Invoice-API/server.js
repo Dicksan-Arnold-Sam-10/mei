@@ -7,6 +7,15 @@ dotenv.config();
 
 const app = express();
 
+// debug output for env vars
+console.log('🔧 Environment variables:');
+console.log('  DB_HOST=', process.env.DB_HOST);
+console.log('  DB_PORT=', process.env.DB_PORT);
+console.log('  DB_NAME=', process.env.DB_NAME);
+console.log('  DB_USER=', process.env.DB_USER);
+console.log('  JWT_SECRET=', !!process.env.JWT_SECRET ? '[redacted]' : undefined);
+
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
