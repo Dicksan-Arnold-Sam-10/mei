@@ -1,7 +1,7 @@
 {
   "name": "invoice-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -17,7 +17,6 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.0.1",
     "mysql2": "^3.15.3",
     "sequelize": "^6.37.7"
   },
