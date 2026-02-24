@@ -6,7 +6,10 @@ const sequelize = require('./config/database');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'https://mei-f3xnnazh2-dicksanarnoldsam1141-6056s-projects.vercel.app',
+  credentials: true,
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
