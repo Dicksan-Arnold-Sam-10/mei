@@ -1,19 +1,32 @@
 const express = require('express');
 const cors = require('cors');
-// ❌ REMOVED: dotenv - Vercel injects env vars automatically
 const sequelize = require('./config/database');
 
 const app = express();
 
-// Middleware
+// ✅ FIX: Allow all Vercel deployments (preview + production) + local dev
+const allowedOrigins = [
+  /\.vercel\.app$/,           // all *.vercel.app previews
+  /^http:\/\/localhost/,       // local development
+];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://mei-f3xnnazh2-dicksanarnoldsam1141-6056s-projects.vercel.app',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, mobile apps)
+    if (!origin) return callback(null, true);
+    const allowed = allowedOrigins.some((pattern) =>
+      pattern instanceof RegExp ? pattern.test(origin) : pattern === origin
+    );
+    if (allowed) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Lazy DB init — runs once per serverless container (handles cold starts safely)
+// Lazy DB init — runs once per serverless container
 let dbInitialized = false;
 let dbInitPromise = null;
 
@@ -29,7 +42,7 @@ const initializeDatabase = async () => {
       console.log('✅ Database synced');
       dbInitialized = true;
     } catch (err) {
-      dbInitPromise = null; // allow retry on next request
+      dbInitPromise = null;
       console.error('❌ DB init error:', err.message);
       throw err;
     }
@@ -38,7 +51,6 @@ const initializeDatabase = async () => {
   return dbInitPromise;
 };
 
-// Run DB init on app load (non-blocking — errors handled per-request)
 initializeDatabase().catch(() => {});
 
 // Routes
@@ -50,10 +62,8 @@ app.get('/', (req, res) => {
   res.json({ message: '✅ Invoice Backend Running' });
 });
 
-// Export for Vercel serverless
 module.exports = app;
 
-// Start local server only when run directly
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
