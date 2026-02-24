@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://mei-kp63.vercel.app';
+const API_BASE_URL = (process.env.REACT_APP_API_URL || 'https://mei-kp63.vercel.app') + '/api';
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
